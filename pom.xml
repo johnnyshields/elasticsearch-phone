@@ -6,20 +6,26 @@
     <groupId>com.inin.analytics</groupId>
     <artifactId>elasticsearch-phone</artifactId>
     <packaging>jar</packaging>
-    <version>5.1.1-SNAPSHOT</version>
+    <!-- Plugin version tracks the target Elasticsearch version (es.version + plugin revision). -->
+    <version>9.4.2.0-SNAPSHOT</version>
     <name>elasticsearch-phone</name>
     <description>Elasticsearch Plugin for Phone and SIP Analysis</description>
-    <url>https://github.com/MyPureCloud/elasticsearch-phone</url>
+    <url>https://github.com/johnnyshields/elasticsearch-phone</url>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.sourceVersion>1.8</project.build.sourceVersion>
-        <elasticsearch.version>5.1.1</elasticsearch.version>
-        <lucene.version>6.3.0</lucene.version>
-        <junit.version>4.12</junit.version>
-        <randomizedtesting.version>2.5.3</randomizedtesting.version>
-        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-        <surefire.version>2.7.2</surefire.version>
-        <elasticsearch.assembly.descriptor>${basedir}/src/main/assemblies/plugin.xml</elasticsearch.assembly.descriptor>
+        <!-- Elasticsearch 9.x runs on, and is built with, JDK 21. -->
+        <maven.compiler.release>21</maven.compiler.release>
+
+        <elasticsearch.version>9.4.2</elasticsearch.version>
+        <lucene.version>10.4.0</lucene.version>
+        <libphonenumber.version>9.0.33</libphonenumber.version>
+
+        <junit.version>4.13.2</junit.version>
+
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+        <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
     </properties>
 
     <licenses>
@@ -30,92 +36,46 @@
     </licenses>
 
     <scm>
-        <connection>https://github.com/MyPureCloud/elasticsearch-phone.git</connection>
-        <developerConnection>https://github.com/MyPureCloud/elasticsearch-phone.git</developerConnection>
-        <url>https://github.com/MyPureCloud/elasticsearch-phone.git</url>
+        <connection>scm:git:https://github.com/johnnyshields/elasticsearch-phone.git</connection>
+        <developerConnection>scm:git:https://github.com/johnnyshields/elasticsearch-phone.git</developerConnection>
+        <url>https://github.com/johnnyshields/elasticsearch-phone</url>
     </scm>
 
-    <!--External Repositories -->
-    <repositories>
-        <repository>
-            <id>oss-sonatype</id>
-            <name>oss-sonatype</name>
-            <url>https://oss.sonatype.org/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>central</id>
-            <name>Maven Repository Switchboard</name>
-            <layout>default</layout>
-            <url>http://repo1.maven.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>inin-release</id>
-            <name>ININ Release Repository</name>
-            <url>https://purecloud.artifactoryonline.com/purecloud/inin-release</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>inin-snapshot</id>
-            <name>ININ Snapshot Repository</name>
-            <url>https://purecloud.artifactoryonline.com/purecloud/inin-snapshot</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencies>
-        <dependency>
-            <groupId>com.googlecode.libphonenumber</groupId>
-            <artifactId>libphonenumber</artifactId>
-            <version>8.4.0</version>
-        </dependency>
+        <!--
+            Elasticsearch (and the Lucene libraries it bundles) are supplied by the running
+            node, so they are "provided": on the compile/test classpath but NOT bundled into
+            the plugin zip. The plugin's elasticsearch.version must match the node exactly.
+        -->
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>${lucene.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analysis-common</artifactId>
+            <version>${lucene.version}</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- Testing -->
+        <!-- The only third-party runtime dependency; bundled into the plugin zip. -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-core</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.googlecode.libphonenumber</groupId>
+            <artifactId>libphonenumber</artifactId>
+            <version>${libphonenumber.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.carrotsearch.randomizedtesting</groupId>
-            <artifactId>randomizedtesting-runner</artifactId>
-            <version>${randomizedtesting.version}</version>
-            <scope>test</scope>
-        </dependency>
+
+        <!-- Testing: analyzers are unit-tested directly via Lucene's BaseTokenStreamTestCase
+             (no Elasticsearch node required). lucene-test-framework pulls in lucene-core,
+             lucene-analysis-common and the randomizedtesting runner transitively. -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-test-framework</artifactId>
@@ -123,55 +83,17 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.elasticsearch.test</groupId>
-            <artifactId>framework</artifactId>
-            <version>${elasticsearch.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.7</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.7</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
-    <developers>
-        <developer>
-            <name>Drew Dahlke</name>
-            <email>justin.dahlke@gmail.com</email>
-            <organization>Interactive Intelligence</organization>
-            <organizationUrl>http://www.inin.com</organizationUrl>
-        </developer>
-        <developer>
-            <name>Michael Mulligan</name>
-            <email>Michael.Mulligan@inin.com</email>
-            <organization>Interactive Intelligence</organization>
-            <organizationUrl>http://www.inin.com</organizationUrl>
-        </developer>
-    </developers>
-
-    <distributionManagement>
-        <repository>
-            <id>inin-release</id>
-            <name>ININ Release Repository</name>
-            <url>https://purecloud.artifactoryonline.com/purecloud/inin-release</url>
-        </repository>
-        <snapshotRepository>
-            <id>inin-snapshot</id>
-            <name>ININ Snapshot Repository</name>
-            <url>https://purecloud.artifactoryonline.com/purecloud/inin-snapshot</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <build>
         <resources>
+            <!-- Filter plugin-descriptor.properties so ${project.version},
+                 ${elasticsearch.version}, etc. are resolved at build time. -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
@@ -180,51 +102,26 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${project.build.sourceVersion}</source>
-                    <target>${project.build.sourceVersion}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <argLine>-Dtests.security.manager=false</argLine>
+                    <release>${maven.compiler.release}</release>
                 </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <!-- LuceneTestCase requires assertions to be enabled. -->
+                    <argLine>-ea</argLine>
+                </configuration>
             </plugin>
+
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
+                <version>${maven-assembly-plugin.version}</version>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <outputDirectory>${project.build.directory}/releases/</outputDirectory>

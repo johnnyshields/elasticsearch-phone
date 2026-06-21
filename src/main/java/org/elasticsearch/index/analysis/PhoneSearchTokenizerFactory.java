@@ -7,8 +7,10 @@ import org.elasticsearch.index.IndexSettings;
 
 public class PhoneSearchTokenizerFactory extends AbstractTokenizerFactory {
 
+    // The four-arg signature is required by AnalysisModule.AnalysisProvider so this can be
+    // referenced as PhoneSearchTokenizerFactory::new; only the name is needed by the base class.
     public PhoneSearchTokenizerFactory(IndexSettings indexSettings, Environment environment, String name, Settings settings) {
-        super(indexSettings, name, settings);
+        super(name);
     }
 
     @Override

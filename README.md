@@ -6,9 +6,23 @@ It's a hard problem to regex your way out of. An international phone number ofte
 
 Note: This is a young project. We'll improve as time goes on, but use at your own risk.
 
-# Building and installing the plugin
-mvn package  
-./bin/elasticsearch-plugin install file:///....elasticsearch-phone/target/releases/elasticsearch-phone-5.1.1.zip
+## Compatibility
+
+This fork targets **Elasticsearch 9.4.2** (built and verified against it) and requires **JDK 21**, matching Elasticsearch 9.x. Elasticsearch requires a plugin's `elasticsearch.version` to match the node exactly, so the plugin version tracks the Elasticsearch version as `<elasticsearch.version>.<plugin-revision>` (e.g. `9.4.2.0`). For older Elasticsearch, see the upstream `purecloudlabs/elasticsearch-phone` history (e.g. the `5.1.1-dev` branch for ES 5.x). See [MIGRATION.md](MIGRATION.md) for upgrade notes.
+
+## Building and installing the plugin
+
+Build the plugin zip (requires Maven and JDK 21):
+
+```sh
+mvn clean package
+```
+
+This produces `target/releases/elasticsearch-phone-9.4.2.0-SNAPSHOT.zip`. Install it into a **matching** Elasticsearch 9.4.2 node and restart the node:
+
+```sh
+bin/elasticsearch-plugin install --batch file:///path/to/elasticsearch-phone/target/releases/elasticsearch-phone-9.4.2.0-SNAPSHOT.zip
+```
 
 # Analyzers
 
@@ -26,13 +40,15 @@ Provide a telephone or sip address prefixed by `tel:` or `sip:` with no spaces o
 Your indexing template will need to specify the analyzer for the field. EG
 ```json
             "field": {
-              "type": "string",
+              "type": "text",
               "analyzer": "phone",
               "search_analyzer": "phone-search"
             }
 ```
 
-Sample allowed inputs (see **PhoneTokenizerIntegrationTest** and **PhoneSearchIntegrationTest** for more):
+(The `text` type replaces the long-removed `string` type from older Elasticsearch.)
+
+Sample allowed inputs (see the analyzer tests under `src/test/java` — `PhoneAnalyzerTest`, `EmailAnalyzerTest`, `PhoneSearchAnalyzerTest` — for more):
 * tel:+441344840400
 * tel:+498362930830
 * sip:abc@autosbcpc
