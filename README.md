@@ -4,8 +4,6 @@ Indexing phone numbers & sip addresses in lucene is complicated. Most people use
 
 It's a hard problem to regex your way out of. An international phone number often includes a country code, but that can be 1, 2, or 3+ digits. A lot of people have requested elasticsearch integrate google's libphone library into a custom lucene analyzer. It hasn't happened yet, so here's a plugin that attempts to do just that.
 
-Note: This is a young project. We'll improve as time goes on, but use at your own risk.
-
 ## Compatibility
 
 This fork targets **Elasticsearch 9.4.2** (built and verified against it) and requires **JDK 21**, matching Elasticsearch 9.x. Elasticsearch requires a plugin's `elasticsearch.version` to match the node exactly, so the plugin version tracks the Elasticsearch version as `<elasticsearch.version>.<plugin-revision>` (e.g. `9.4.2.0`). For older Elasticsearch, see the upstream `purecloudlabs/elasticsearch-phone` history (e.g. the `5.1.1-dev` branch for ES 5.x).
@@ -23,6 +21,12 @@ This produces `target/releases/elasticsearch-phone-9.4.2.0-SNAPSHOT.zip`. Instal
 ```sh
 bin/elasticsearch-plugin install --batch file:///path/to/elasticsearch-phone/target/releases/elasticsearch-phone-9.4.2.0-SNAPSHOT.zip
 ```
+
+## Upgrading
+
+If you are upgrading from 1.x or 5.x releases, note that the analyzers names have changed from from hyphenated to underscored to match Elasticsearch conventions:
+- `phone-email` --> `phone_email`
+- `phone-search` --> `phone_search`
 
 # Analyzers
 
