@@ -6,7 +6,7 @@ import org.junit.Test;
 
 /**
  * Verifies email tokenization. The {@code phone} analyzer keeps the address mostly intact, while
- * the {@code phone-email} analyzer additionally splits the user and domain parts into components.
+ * the {@code phone_email} analyzer additionally splits the user and domain parts into components.
  * Ported from the email cases of the original PhoneTokenizerIntegrationTest.
  */
 public class EmailAnalyzerTest extends PhoneAnalysisTestCase {

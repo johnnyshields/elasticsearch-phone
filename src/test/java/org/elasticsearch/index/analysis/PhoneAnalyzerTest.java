@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 /**
- * Verifies the index-time {@code phone} and {@code phone-email} analyzers tokenize phone numbers
+ * Verifies the index-time {@code phone} and {@code phone_email} analyzers tokenize phone numbers
  * and SIP URIs as expected. Ported from the original PhoneTokenizerIntegrationTest; both analyzers
  * are expected to produce these tokens for raw phone/SIP input.
  */

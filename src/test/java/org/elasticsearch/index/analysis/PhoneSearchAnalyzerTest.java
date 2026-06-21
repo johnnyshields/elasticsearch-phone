@@ -6,8 +6,8 @@ import org.apache.lucene.analysis.Analyzer;
 import org.junit.Test;
 
 /**
- * Verifies search behavior: a value indexed with the {@code phone}/{@code phone-email} analyzer is
- * matched (or not) by a query analyzed with the {@code phone-search} analyzer. Ported from the
+ * Verifies search behavior: a value indexed with the {@code phone}/{@code phone_email} analyzer is
+ * matched (or not) by a query analyzed with the {@code phone_search} analyzer. Ported from the
  * original PhoneSearchIntegrationTest; {@link #matches} mirrors a {@code match} query with the AND
  * operator (every search token must be present among the indexed tokens).
  */

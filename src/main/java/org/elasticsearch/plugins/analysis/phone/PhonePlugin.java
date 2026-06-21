@@ -28,8 +28,8 @@ public class PhonePlugin extends Plugin implements AnalysisPlugin {
     public Map<String, AnalysisProvider<AnalyzerProvider<? extends Analyzer>>> getAnalyzers() {
         Map<String, AnalysisProvider<AnalyzerProvider<? extends Analyzer>>> analyzerMap = new HashMap<>();
         analyzerMap.put("phone", PhoneAnalyzerProvider::new);
-        analyzerMap.put("phone-search", PhoneSearchAnalyzerProvider::new);
-        analyzerMap.put("phone-email", PhoneEmailAnalyzerProvider::new);
+        analyzerMap.put("phone_search", PhoneSearchAnalyzerProvider::new);
+        analyzerMap.put("phone_email", PhoneEmailAnalyzerProvider::new);
         return analyzerMap;
     }
 }
