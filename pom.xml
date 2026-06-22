@@ -4,11 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.inin.analytics</groupId>
-    <artifactId>elasticsearch-phone</artifactId>
+    <!-- artifactId is "elasticsearch-analysis-phone" so the default build produces
+         elasticsearch-analysis-phone-<version>.zip, matching the ES analysis-plugin convention. -->
+    <artifactId>elasticsearch-analysis-phone</artifactId>
     <packaging>jar</packaging>
-    <!-- Plugin version tracks the target Elasticsearch version (es.version + plugin revision). -->
-    <version>9.4.2.0-SNAPSHOT</version>
-    <name>elasticsearch-phone</name>
+    <!-- Plugin version matches the target Elasticsearch version exactly. -->
+    <version>9.4.2</version>
+    <name>elasticsearch-analysis-phone</name>
     <description>Elasticsearch Plugin for Phone and SIP Analysis</description>
     <url>https://github.com/johnnyshields/elasticsearch-phone</url>
 

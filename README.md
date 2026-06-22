@@ -6,9 +6,19 @@ It's a hard problem to regex your way out of. An international phone number ofte
 
 ## Compatibility
 
-This fork targets **Elasticsearch 9.4.2** (built and verified against it) and requires **JDK 21**, matching Elasticsearch 9.x. Elasticsearch requires a plugin's `elasticsearch.version` to match the node exactly, so the plugin version tracks the Elasticsearch version as `<elasticsearch.version>.<plugin-revision>` (e.g. `9.4.2.0`). For older Elasticsearch, see the upstream `purecloudlabs/elasticsearch-phone` history (e.g. the `5.1.1-dev` branch for ES 5.x).
+This fork targets **Elasticsearch 9.4.2** (built and verified against it) and requires **JDK 21**, matching Elasticsearch 9.x. Elasticsearch requires a plugin's `elasticsearch.version` to match the node exactly, so the plugin version matches the Elasticsearch version exactly (e.g. `9.4.2`). For older Elasticsearch, see the upstream `purecloudlabs/elasticsearch-phone` history (e.g. the `5.1.1-dev` branch for ES 5.x).
 
-## Building and installing the plugin
+The plugin installs under the name **`analysis-phone`**.
+
+## Installing a released build
+
+Install directly from a GitHub release asset into a matching Elasticsearch node, then restart it:
+
+```sh
+bin/elasticsearch-plugin install https://github.com/johnnyshields/elasticsearch-phone/releases/download/9.4.2/elasticsearch-analysis-phone-9.4.2.zip
+```
+
+## Building from source
 
 Build the plugin zip (requires Maven and JDK 21):
 
@@ -16,10 +26,10 @@ Build the plugin zip (requires Maven and JDK 21):
 mvn clean package
 ```
 
-This produces `target/releases/elasticsearch-phone-9.4.2.0-SNAPSHOT.zip`. Install it into a **matching** Elasticsearch 9.4.2 node and restart the node:
+This produces `target/releases/elasticsearch-analysis-phone-9.4.2.zip`. Install it into a **matching** Elasticsearch 9.4.2 node and restart the node:
 
 ```sh
-bin/elasticsearch-plugin install --batch file:///path/to/elasticsearch-phone/target/releases/elasticsearch-phone-9.4.2.0-SNAPSHOT.zip
+bin/elasticsearch-plugin install --batch file:///path/to/elasticsearch-phone/target/releases/elasticsearch-analysis-phone-9.4.2.zip
 ```
 
 ## Upgrading
